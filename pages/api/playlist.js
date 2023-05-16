@@ -2,11 +2,11 @@ const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3';
 
 export default async function handler(req, res) {
-  const { playlistId, pageToken } = req.query;
+  const { playlistId } = req.query;
 
   try {
     const response = await fetch(
-      `${YOUTUBE_API_URL}/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${YOUTUBE_API_KEY}&pageToken=${pageToken}`
+      `${YOUTUBE_API_URL}/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${YOUTUBE_API_KEY}`
     );
 
     if (!response.ok) {
