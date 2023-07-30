@@ -4,7 +4,7 @@ export default function Search() {
   const [playlistId, setPlaylistId] = useState("");
   const [videos, setVideos] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [nextPageToken, setNextPageToken] = useState(null);
+  const [nextPageToken, setNextPageToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -13,7 +13,10 @@ export default function Search() {
     setError(null); // Reset error state before a new search
 
     try {
-      const response = await fetch(`/api/playlist?playlistId=${playlistId}`);
+      const fetchURL = `/api/playlist?playlistId=${playlistId}`;
+      console.log(fetchURL);
+      const response = await fetch(fetchURL);
+      console.log(response);
       if (!response.ok) {
         throw new Error("Failed to fetch playlist items");
       }
@@ -29,7 +32,9 @@ export default function Search() {
 
   const handleLoadMore = async () => {
     try {
-      const response = await fetch(`/api/playlist?playlistId=${playlistId}`);
+      const response = await fetch(
+        `/api/playlist?playlistId=${playlistId}&pageToken=${nextPageToken}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch playlist items");
       }
@@ -70,16 +75,34 @@ export default function Search() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {videos
-          .filter((video) =>
-            video.snippet.title.toLowerCase().includes(searchTerm.toLowerCase())
+          .filter(
+            (video) =>
+              video.snippet.title
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) &&
+              !video.snippet.title.toLowerCase().includes("deleted video") &&
+              !video.snippet.title.toLowerCase().includes("private video")
           )
-          .map((video) => (
-            <div key={video.id} className="mb-2">
-              <img
-                src={video.snippet.thumbnails.default.url}
-                alt={video.snippet.title}
-              />
-              <p>{video.snippet.title}</p>
+          .map((video, index) => (
+            <div
+              key={`${video.id}-${index}`}
+              className="bg-white rounded-lg shadow-md overflow-hidden"
+            >
+              <a
+                href={`https://www.youtube.com/watch?v=${video.id.videoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src={video.snippet.thumbnails?.medium?.url ?? ""}
+                  alt={video.snippet.title}
+                  className="w-full h-48 object-cover"
+                />
+              </a>
+              <div className="p-4">
+                <h2 className="text-lg font-medium text-gray-500">{video.snippet.title}</h2>
+                <p className="text-gray-500">{video.snippet.channelTitle}</p>
+              </div>
             </div>
           ))}
       </div>
