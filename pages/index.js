@@ -22,7 +22,11 @@ export default function Search() {
       }
       setIsLoading(true);
       const data = await response.json();
-      setVideos(data.items);
+      const videosWithUrl = data.items.map((item) => ({
+        ...item,
+        url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
+      }));
+      setVideos(videosWithUrl);
       setNextPageToken(data.nextPageToken);
       setIsLoading(false);
     } catch (error) {
@@ -40,7 +44,11 @@ export default function Search() {
       }
       setIsLoading(true);
       const data = await response.json();
-      setVideos(videos.concat(data.items));
+      const videosWithUrl = data.items.map((item) => ({
+        ...item,
+        url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
+      }));
+      setVideos(videos.concat(videosWithUrl));
       setNextPageToken(data.nextPageToken);
       setIsLoading(false);
     } catch (error) {
@@ -89,7 +97,7 @@ export default function Search() {
               className="bg-white rounded-lg shadow-md overflow-hidden"
             >
               <a
-                href={`https://www.youtube.com/watch?v=${video.id.videoId}`}
+                href={video.url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -101,7 +109,7 @@ export default function Search() {
               </a>
               <div className="p-4">
                 <h2 className="text-lg font-medium text-gray-500">{video.snippet.title}</h2>
-                <p className="text-gray-500">{video.snippet.channelTitle}</p>
+                {/* <p className="text-gray-500">{video.snippet.channelTitle}</p> */}
               </div>
             </div>
           ))}
