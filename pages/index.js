@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export default function Search() {
-  const [playlistId, setPlaylistId] = useState("");
+  const [playlistId, setPlaylistId] = useState('');
   const [videos, setVideos] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [nextPageToken, setNextPageToken] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [nextPageToken, setNextPageToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -18,7 +18,7 @@ export default function Search() {
       const response = await fetch(fetchURL);
       console.log(response);
       if (!response.ok) {
-        throw new Error("Failed to fetch playlist items");
+        throw new Error('Failed to fetch playlist items');
       }
       setIsLoading(true);
       const data = await response.json();
@@ -40,7 +40,7 @@ export default function Search() {
         `/api/playlist?playlistId=${playlistId}&pageToken=${nextPageToken}`
       );
       if (!response.ok) {
-        throw new Error("Failed to fetch playlist items");
+        throw new Error('Failed to fetch playlist items');
       }
       setIsLoading(true);
       const data = await response.json();
@@ -88,42 +88,42 @@ export default function Search() {
               video.snippet.title
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) &&
-              !video.snippet.title.toLowerCase().includes("deleted video") &&
-              !video.snippet.title.toLowerCase().includes("private video")
+              !video.snippet.title.toLowerCase().includes('deleted video') &&
+              !video.snippet.title.toLowerCase().includes('private video')
           )
           .map((video, index) => (
             <div
               key={`${video.id}-${index}`}
               className="bg-white rounded-lg shadow-md overflow-hidden"
             >
-              <a
-                href={video.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={video.url} target="_blank" rel="noopener noreferrer">
                 <img
-                  src={video.snippet.thumbnails?.medium?.url ?? ""}
+                  src={video.snippet.thumbnails?.medium?.url ?? ''}
                   alt={video.snippet.title}
                   className="w-full h-48 object-cover"
                 />
               </a>
               <div className="p-4">
-                <h2 className="text-lg font-medium text-gray-500">{video.snippet.title}</h2>
+                <h2 className="text-lg font-medium text-gray-500">
+                  {video.snippet.title}
+                </h2>
                 {/* <p className="text-gray-500">{video.snippet.channelTitle}</p> */}
               </div>
             </div>
           ))}
       </div>
 
-      <button
-        onClick={handleLoadMore}
-        disabled={isLoading || !nextPageToken}
-        className={`bg-blue-500 text-white p-2 mt-4 ${
-          isLoading || !nextPageToken ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-      >
-        {isLoading ? "Loading..." : "Load more"}
-      </button>
+      {videos.length > 0 && (
+        <button
+          onClick={handleLoadMore}
+          disabled={isLoading || !nextPageToken}
+          className={`bg-blue-500 text-white p-2 mt-4 ${
+            isLoading || !nextPageToken ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+        >
+          {isLoading ? 'Loading...' : 'Load more'}
+        </button>
+      )}
     </div>
   );
 }
